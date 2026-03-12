@@ -21,10 +21,11 @@ resource "kubernetes_manifest" "letsencrypt_certificate" {
       dnsNames = var.top_level_domains
 
       # Reference to the Issuer defined previously
+      
       issuerRef = {
         name = "letsencrypt-gateway"
-        kind = "Issuer"
-      }
+        kind = "ClusterIssuer"
+      }  
     }
   }
   #depends_on = [ helm_release.cert-manager, digitalocean_kubernetes_cluster.default_cluster ]

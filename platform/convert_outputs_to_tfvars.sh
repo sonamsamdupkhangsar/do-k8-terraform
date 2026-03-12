@@ -6,6 +6,8 @@ jq -r 'to_entries[] | "\(.key) = \(.value.value|@json)"' ../utils/platform-outpu
 # Append Spaces credentials from production.tfvars if present
 # Append Spaces credentials and other required vars from production.tfvars if present
 
+
+# Copy single-line properties
 grep -E '^(spaces_access_id|spaces_secret_key|bucket_endpoint_url|spaces_region|digitalocean_token)\s*=' ../platform/production.auto.tfvars >> ../utils/utils.auto.tfvars
 
 # Copy kubeconfig file to utils folder

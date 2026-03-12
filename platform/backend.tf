@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = var.bucket
+    bucket = "sonam"
     key    = "terraform/terraform.tfstate"
     endpoint = "https://sfo2.digitaloceanspaces.com" # Replace with your Space's region endpoint
     region = "us-east-1" # The region value is technically ignored by DO but required by the s3 backend

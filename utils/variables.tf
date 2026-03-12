@@ -53,4 +53,5 @@ variable digitalocean_token {
 variable top_level_domains {
   description = "Top level domains to create records and pods for"
   type    = list(string)
+  default = [ "hipstershop.springauth.com", "bookinfo.springauth.com" ]
 }

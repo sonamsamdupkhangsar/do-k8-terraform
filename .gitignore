@@ -1,3 +1,9 @@
+# Ignore exclude folder
+exclude/
+/.vscode/
+.vscode/
+*.code-workspace
+platform-outputs.json
 kubeconfig_tutorial-1.yaml
 
 # Local .terraform directories

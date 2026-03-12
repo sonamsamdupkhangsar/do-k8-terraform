@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-gateway
+  namespace: backend
+spec:
+  acme:
+    email: {{ .Values.letsencrypt_email }} # Replace this with your email address
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-gateway-account-key
+    solvers:
+      # Use the HTTP-01 challenge provider
+      - http01:
+          gatewayHTTPRoute:
+            parentRefs:
+              - name: tls-gateway
+                kind: Gateway
+                namespace: backend

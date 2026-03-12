@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: digitalocean-dns-token
+  namespace: backend
+  labels:
+    app: cert-manager
+    chart: cert-manager
+    release: cert-manager
+    heritage: Helm
+    managed-by: cluster-issuer
+    environment: production
+    terraform: "true"
+type: Opaque
+stringData:
+  access-token: {{ .Values.digitalocean_api_token | quote }}

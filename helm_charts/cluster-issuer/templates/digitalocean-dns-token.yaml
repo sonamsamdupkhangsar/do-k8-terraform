@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: digitalocean-dns-token
-  namespace: backend
+  namespace: {{ .Values.cert_manager_namespace }} # Replace this with the namespace where cert-manager is installed
   labels:
     app: cert-manager
     chart: cert-manager

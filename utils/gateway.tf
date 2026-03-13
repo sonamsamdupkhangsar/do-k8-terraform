@@ -8,7 +8,7 @@ resource "kubernetes_manifest" "tls_gateway" {
     metadata = {
       name      = "tls-gateway"
       # If you use a specific namespace for your gateways, specify it here:
-      namespace = "backend" 
+      namespace = var.project_namespace
     }
 
     # Corresponds to spec
@@ -27,7 +27,7 @@ resource "kubernetes_manifest" "tls_gateway" {
               {
                 kind = "Secret"
                 name = "gateway-tls-secret"
-                namespace = "backend"
+                namespace = var.cert_manager_namespace
                 # If the secret is in a different namespace than the Gateway,
                 # you must also specify 'namespace' here (e.g., namespace = "cert-manager")
               }
@@ -46,7 +46,7 @@ resource "kubernetes_manifest" "tls_gateway" {
               {
                 kind = "Secret"
                 name = "gateway-tls-secret"
-                namespace = "backend"
+                namespace = var.cert_manager_namespace
               }
             ]
           }
@@ -104,13 +104,13 @@ resource "kubernetes_manifest" "solver_reference_grant" {
     kind       = "ReferenceGrant"
     metadata = {
       name      = "allow-gw-to-solver-svc"
-      namespace = "backend" # Where the Solver Service lives
+      namespace = var.project_namespace # Where the Solver Service lives
     }
     spec = {
       from = [{
         group     = "gateway.networking.k8s.io"
         kind      = "Gateway"
-        namespace = "backend" # Where your Gateway now lives
+        namespace = var.project_namespace # Where your Gateway now lives
       }]
       to = [{
         group = "" # Core API group

@@ -5,7 +5,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: https-bookinfo-route
-  namespace: backend
+  namespace: ${var.project_namespace}
 spec:
   # Attach to BOTH the HTTP (port 80) and HTTPS (port 443) listeners
   parentRefs:
@@ -29,7 +29,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: https-hipstershop-route
-  namespace: backend
+  namespace: ${var.project_namespace}
 spec:
   parentRefs:
   - name: tls-gateway
@@ -51,7 +51,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name:  http-bookinfo-https-redirect-route
-  namespace: backend
+  namespace: ${var.project_namespace}
 spec:
   parentRefs:
   - group: gateway.networking.k8s.io
@@ -72,7 +72,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: http-hipstershop-https-redirect-route
-  namespace: backend
+  namespace: ${var.project_namespace}
 spec:
   parentRefs:
   - group: gateway.networking.k8s.io

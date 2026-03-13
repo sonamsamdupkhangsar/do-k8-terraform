@@ -84,3 +84,13 @@ variable "bucket" {
   description = "Name of the Spaces bucket"
   type        = string
 }
+
+variable "project_namespace" {
+  description = "The namespace for the project"
+  type        = string
+}
+
+variable "cert_manager_namespace" {
+  description = "The namespace for cert-manager"
+  type        = string
+}

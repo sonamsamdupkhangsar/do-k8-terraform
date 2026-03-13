@@ -3,9 +3,9 @@ resource "helm_release" "external_dns_release" {
   # Reference the repository name defined in the helm_repository resource
   repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"
-  namespace = "backend"
+  namespace = var.project_namespace
   # It's good practice to ensure the secret exists before trying to deploy the chart
-  #depends_on = [local.http_routes_yaml]
+  depends_on = [kubernetes_namespace_v1.project_namespace]
   
   # Use a heredoc string to insert the YAML values directly
   values = [<<EOF

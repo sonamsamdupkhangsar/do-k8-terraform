@@ -37,4 +37,6 @@ module "core" {
   spaces_access_id = var.spaces_access_id
   spaces_secret_key = var.spaces_secret_key
   bucket = var.bucket
+  project_namespace = var.project_namespace
+  cert_manager_namespace = var.cert_manager_namespace
 }

@@ -8,7 +8,7 @@ resource "kubernetes_manifest" "letsencrypt_certificate" {
     metadata = {
       name = "letsencrypt-certificate"
       # IMPORTANT: This must be in the SAME namespace as your Issuer (e.g., "default" or "cert-manager")
-      namespace = "backend"
+      namespace = var.project_namespace
     }
 
     # Corresponds to spec
@@ -28,5 +28,5 @@ resource "kubernetes_manifest" "letsencrypt_certificate" {
       }  
     }
   }
-  #depends_on = [ helm_release.cert-manager, digitalocean_kubernetes_cluster.default_cluster ]
+
 }

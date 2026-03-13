@@ -1,17 +1,10 @@
-# Create backend namespace
-resource "kubernetes_namespace_v1" "backend" {
-  metadata {
-    name = "backend"
-  }
-}
-
 # Define the Kubernetes secret resource
 resource "kubernetes_secret_v1" "digitalocean_dns" {
   metadata {
     # The name of the secret must match the kubectl command's name
     name = "digitalocean-dns"
     # You may also specify a namespace if needed, e.g.:
-    namespace = kubernetes_namespace_v1.backend.metadata[0].name
+    namespace = kubernetes_namespace_v1.project_namespace.metadata[0].name
   }
 
   # Data map stores the literal values. 
@@ -23,6 +16,6 @@ resource "kubernetes_secret_v1" "digitalocean_dns" {
 
   # Optional: Define the type of secret if necessary, e.g., Opaque (default)
   # type = "Opaque"
-  depends_on = [ kubernetes_namespace_v1.backend ]
+  depends_on = [ kubernetes_namespace_v1.project_namespace ]
 }
 

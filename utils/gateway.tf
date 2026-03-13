@@ -27,7 +27,7 @@ resource "kubernetes_manifest" "tls_gateway" {
               {
                 kind = "Secret"
                 name = "gateway-tls-secret"
-                namespace = var.cert_manager_namespace
+                namespace = var.project_namespace # This must match the namespace where the Secret is created (e.g., "cert-manager" or "default")
                 # If the secret is in a different namespace than the Gateway,
                 # you must also specify 'namespace' here (e.g., namespace = "cert-manager")
               }
@@ -46,7 +46,7 @@ resource "kubernetes_manifest" "tls_gateway" {
               {
                 kind = "Secret"
                 name = "gateway-tls-secret"
-                namespace = var.cert_manager_namespace
+                namespace = var.project_namespace # This must match the namespace where the Secret is created (e.g., "cert-manager" or "default")
               }
             ]
           }

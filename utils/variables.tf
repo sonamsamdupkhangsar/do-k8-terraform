@@ -55,3 +55,13 @@ variable top_level_domains {
   type    = list(string)
   default = [ "hipstershop.springauth.com", "bookinfo.springauth.com" ]
 }
+
+variable "project_namespace" {
+  description = "The namespace for the project"
+  type        = string
+}
+
+variable "cert_manager_namespace" {
+  description = "The namespace for cert-manager"
+  type        = string
+}

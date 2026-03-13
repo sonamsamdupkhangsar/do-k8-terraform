@@ -8,7 +8,7 @@ jq -r 'to_entries[] | "\(.key) = \(.value.value|@json)"' ../utils/platform-outpu
 
 
 # Copy single-line properties
-grep -E '^(spaces_access_id|spaces_secret_key|bucket_endpoint_url|spaces_region|digitalocean_token)\s*=' ../platform/production.auto.tfvars >> ../utils/utils.auto.tfvars
+grep -E '^(spaces_access_id|spaces_secret_key|bucket_endpoint_url|spaces_region|digitalocean_token|cert_manager_namespace|project_namespace)\s*=' ../platform/production.auto.tfvars >> ../utils/utils.auto.tfvars
 
 # Copy kubeconfig file to utils folder
 KUBECONFIG_FILE=$(jq -r '.kube_config_filename.value' ../utils/platform-outputs.json 2>/dev/null)

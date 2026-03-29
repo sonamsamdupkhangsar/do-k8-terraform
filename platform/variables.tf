@@ -1,47 +1,47 @@
 
-variable digitalocean_token {
+variable "digitalocean_token" {
   description = "The API token from your Digital Ocean control panel"
   type        = string
 }
 
-variable cluster_name {
+variable "cluster_name" {
   description = "The name of the kubernetes cluster to create"
   type        = string
 }
 
-variable cluster_version {
+variable "cluster_version" {
   description = "The version of the kubernetes cluster to create"
   type        = string
 }
 
-variable region {
+variable "region" {
   description = "The digital ocean region slug for where to create resources"
   type        = string
   default     = "tor1"
 }
 
-variable top_level_domains {
+variable "top_level_domains" {
   description = "Top level domains to create records and pods for"
-  type    = list(string)
+  type        = list(string)
 }
 
-variable letsencrypt_email {
+variable "letsencrypt_email" {
   type = string
 }
 
-variable min_nodes {
+variable "min_nodes" {
   description = "The minimum number of nodes in the default pool"
   type        = number
   default     = 1
 }
 
-variable max_nodes {
+variable "max_nodes" {
   description = "The maximum number of nodes in the default pool"
   type        = number
   default     = 3
 }
 
-variable default_node_size {
+variable "default_node_size" {
   description = "The default digital ocean node slug for each node in the default pool"
   type        = string
   default     = "s-1vcpu-2gb-amd"
@@ -51,22 +51,28 @@ variable "helm_chart_nginx" {
   default = "4.0.13"
 }
 
-variable domain_name {
-    description = "The domain to create records and pods for"
-    type        = string    
+variable "domain_name" {
+  description = "The domain to create records and pods for"
+  type        = string
+}
+
+variable "create_domain" {
+  description = "Whether this stack should create the DigitalOcean domain or reuse an existing one."
+  type        = bool
+  default     = true
 }
 
 variable "spaces_access_id" {
-    description = "DigitalOcean Spaces access key ID"
-    type        = string
-  }
+  description = "DigitalOcean Spaces access key ID"
+  type        = string
+}
 
-  variable "spaces_secret_key" {
-    description = "DigitalOcean Spaces secret access key"
-    type        = string
-  }
+variable "spaces_secret_key" {
+  description = "DigitalOcean Spaces secret access key"
+  type        = string
+}
 
-  variable "sealed_secrets_private_key" {
+variable "sealed_secrets_private_key" {
   type      = string
   sensitive = true
 }
@@ -89,7 +95,7 @@ variable "bucket_endpoint_url" {
 
 variable "bucket" {
   description = "space bucket"
-  type = string
+  type        = string
 }
 
 variable "project_namespace" {
@@ -100,4 +106,10 @@ variable "project_namespace" {
 variable "cert_manager_namespace" {
   description = "The namespace for cert-manager"
   type        = string
+}
+
+variable "gateway_name" {
+  description = "The name of the Gateway resource used by cert-manager HTTP-01 solving."
+  type        = string
+  default     = "shared-tls-gateway"
 }

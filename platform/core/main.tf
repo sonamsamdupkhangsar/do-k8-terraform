@@ -32,6 +32,16 @@ provider "helm" {
   }
 }
 
+resource "digitalocean_project" "IdentityAccessManagementProject" {
+  name        = "My OpenIssuer Terraform Project for Kubernetes"
+  description = "This project manages Kubernetes resources using Terraform and OpenIssuer."
+  purpose     = "OpenIssuerWeb Application"
+  environment = "Development"
+  # The 'resources' attribute accepts a list of URNs
+  resources   = [
+    "do:kubernetes:${digitalocean_kubernetes_cluster.default_cluster.id}"
+  ]
+}
 
 resource "digitalocean_kubernetes_cluster" "default_cluster" {
   name   = var.cluster_name

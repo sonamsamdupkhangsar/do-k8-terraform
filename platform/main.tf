@@ -1,11 +1,11 @@
 terraform {
   required_providers {
     digitalocean = {
-      source = "digitalocean/digitalocean"
+      source  = "digitalocean/digitalocean"
       version = "~> 2.4.0"
     }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = ">= 2.0.0"
     }
     helm = {
@@ -18,25 +18,27 @@ terraform {
 module "core" {
   source = "./core"
 
-  cluster_name = var.cluster_name
-  cluster_version = var.cluster_version
-  region = var.region
-  min_nodes = var.min_nodes
-  max_nodes = var.max_nodes
-  default_node_size = var.default_node_size
-  domain_name = var.domain_name
+  cluster_name       = var.cluster_name
+  cluster_version    = var.cluster_version
+  region             = var.region
+  min_nodes          = var.min_nodes
+  max_nodes          = var.max_nodes
+  default_node_size  = var.default_node_size
+  domain_name        = var.domain_name
+  create_domain      = var.create_domain
   digitalocean_token = var.digitalocean_token
-  letsencrypt_email = var.letsencrypt_email
+  letsencrypt_email  = var.letsencrypt_email
 
   sealed_secrets_certificate = var.sealed_secrets_certificate
   sealed_secrets_private_key = var.sealed_secrets_private_key
 
   bucket_endpoint_url = var.bucket_endpoint_url
-  spaces_region = var.spaces_region
+  spaces_region       = var.spaces_region
 
-  spaces_access_id = var.spaces_access_id
-  spaces_secret_key = var.spaces_secret_key
-  bucket = var.bucket
-  project_namespace = var.project_namespace
+  spaces_access_id       = var.spaces_access_id
+  spaces_secret_key      = var.spaces_secret_key
+  bucket                 = var.bucket
+  project_namespace      = var.project_namespace
   cert_manager_namespace = var.cert_manager_namespace
+  gateway_name           = var.gateway_name
 }

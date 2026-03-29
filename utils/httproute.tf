@@ -6,15 +6,17 @@ kind: HTTPRoute
 metadata:
   name: https-bookinfo-route
   namespace: ${var.project_namespace}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: bookinfo.springauth.com
 spec:
   # Attach to BOTH the HTTP (port 80) and HTTPS (port 443) listeners
   parentRefs:
-  - name: tls-gateway
-    sectionName: https-1 # Assumes this listener handles port 443 traffic
+  - name: ${var.gateway_name}
+    sectionName: https-bookinfo
   hostnames:
   - "bookinfo.springauth.com"
   rules:
-  # Rule 1: Route HTTPS traffic (received via 'https-1' listener) to the backend
+  # Rule 1: Route HTTPS traffic for this hostname to the backend
   - matches:
     - path:
         type: PathPrefix
@@ -30,14 +32,16 @@ kind: HTTPRoute
 metadata:
   name: https-hipstershop-route
   namespace: ${var.project_namespace}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: hipstershop.springauth.com
 spec:
   parentRefs:
-  - name: tls-gateway
-    sectionName: https-2 # Assumes this listener handles port 443 traffic
+  - name: ${var.gateway_name}
+    sectionName: https-hipstershop
   hostnames:
   - "hipstershop.springauth.com"
   rules:
-  # Rule 2: Route HTTPS traffic (received via 'https-2' listener) to the backend
+  # Rule 2: Route HTTPS traffic for this hostname to the backend
   - matches:
     - path:
         type: PathPrefix
@@ -52,12 +56,14 @@ kind: HTTPRoute
 metadata:
   name:  http-bookinfo-https-redirect-route
   namespace: ${var.project_namespace}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: bookinfo.springauth.com
 spec:
   parentRefs:
   - group: gateway.networking.k8s.io
     kind: Gateway
-    name: tls-gateway
-    sectionName: http # Assumes this listener handles port 80 for bookinfo.springauth.com and all its subdomains
+    name: ${var.gateway_name}
+    sectionName: http-bookinfo
   rules:
   # Rule 1: Redirect everything else
   - filters:
@@ -73,12 +79,14 @@ kind: HTTPRoute
 metadata:
   name: http-hipstershop-https-redirect-route
   namespace: ${var.project_namespace}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: hipstershop.springauth.com
 spec:
   parentRefs:
   - group: gateway.networking.k8s.io
     kind: Gateway
-    name: tls-gateway
-    sectionName: http-2 # Assumes this listener handles port 80 for hipstershop.springauth.com and all its subdomains
+    name: ${var.gateway_name}
+    sectionName: http-hipstershop
   rules:
   - filters:
     - type: RequestRedirect
@@ -96,7 +104,7 @@ EOT
     for doc in local.route_docs :
     try(yamldecode(doc), null)
   ]
-  
+
   # Filter out any decoding errors or invalid structure if necessary (simplified)
   valid_routes = [
     for manifest in local.decoded_routes :
@@ -115,7 +123,7 @@ resource "kubernetes_manifest" "app_http_routes" {
 
   # The manifest content for this specific resource instance is the value from the loop
   manifest = each.value
-  
+
   # Ensure the Gateway exists before trying to apply the HTTPRoute that references it
   # Note: The resource name below should match your actual Gateway resource name in HCL.
   # depends_on = [ kubernetes_manifest.tls_gateway ] 

@@ -39,6 +39,12 @@ variable domain_name {
     type        = string
 }
 
+variable "create_domain" {
+  description = "Whether this stack should create the DigitalOcean domain or reuse an existing one."
+  type        = bool
+  default     = true
+}
+
 
 variable digitalocean_token {
   description = "The API token from your Digital Ocean control panel"
@@ -93,4 +99,10 @@ variable "project_namespace" {
 variable "cert_manager_namespace" {
   description = "The namespace for cert-manager"
   type        = string
+}
+
+variable "gateway_name" {
+  description = "The name of the Gateway resource used by cert-manager HTTP-01 solving."
+  type        = string
+  default     = "shared-tls-gateway"
 }

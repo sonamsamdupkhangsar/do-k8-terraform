@@ -19,3 +19,6 @@ output "kube_config_filename" {
 output "kube_config_file" {
   value = local_file.kubeconfig
 }
+output "project_id" {
+  value = digitalocean_project.IdentityAccessManagementProject.id
+}

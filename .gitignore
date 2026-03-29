@@ -5,6 +5,7 @@ exclude/
 *.code-workspace
 platform-outputs.json
 kubeconfig_tutorial-1.yaml
+tfplan
 
 # Local .terraform directories
 **/.terraform/*

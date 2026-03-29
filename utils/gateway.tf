@@ -1,103 +1,3 @@
-resource "kubernetes_manifest" "tls_gateway" {
-  manifest = {
-    # Corresponds to apiVersion: gateway.networking.k8s.io/v1 and kind: Gateway
-    apiVersion = "gateway.networking.k8s.io/v1"
-    kind       = "Gateway"
-
-    # Corresponds to metadata
-    metadata = {
-      name      = "tls-gateway"
-      # If you use a specific namespace for your gateways, specify it here:
-      namespace = var.project_namespace
-    }
-
-    # Corresponds to spec
-    spec = {
-      gatewayClassName = "cilium" # Ensure this matches your installed GatewayClass
-
-      listeners = [
-        # Listener https-1
-        {
-          name     = "https-1"
-          protocol = "HTTPS"
-          port     = 443
-          hostname = "bookinfo.springauth.com"
-          tls = {
-            certificateRefs = [
-              {
-                kind = "Secret"
-                name = "gateway-tls-secret"
-                namespace = var.project_namespace # This must match the namespace where the Secret is created (e.g., "cert-manager" or "default")
-                # If the secret is in a different namespace than the Gateway,
-                # you must also specify 'namespace' here (e.g., namespace = "cert-manager")
-              }
-            ]
-          }
-        },
-
-        # Listener https-2
-        {
-          name     = "https-2"
-          protocol = "HTTPS"
-          port     = 443
-          hostname = "hipstershop.springauth.com"
-          tls = {
-            certificateRefs = [
-              {
-                kind = "Secret"
-                name = "gateway-tls-secret"
-                namespace = var.project_namespace # This must match the namespace where the Secret is created (e.g., "cert-manager" or "default")
-              }
-            ]
-          }
-        },
-
-        # Listener http (for ACME challenges)
-        {
-          name     = "http"
-          protocol = "HTTP"
-          port     = 80
-          hostname = "bookinfo.springauth.com"
-          allowedRoutes = {
-            namespaces = {
-              from = "All"
-            }
-            # Add this to ensure Cilium allows the HTTPRoute kind specifically
-            kinds = [
-              {
-                group = "gateway.networking.k8s.io"
-                kind  = "HTTPRoute"
-              }
-            ]
-          }
-        },
-
-        # Listener http-2 (for ACME challenges)
-        {
-          name     = "http-2"
-          protocol = "HTTP"
-          port     = 80
-          hostname = "hipstershop.springauth.com"
-          allowedRoutes = {
-            namespaces = {
-              from = "All"
-            }
-            # Add this to ensure Cilium allows the HTTPRoute kind specifically
-            kinds = [
-              {
-                group = "gateway.networking.k8s.io"
-                kind  = "HTTPRoute"
-              }
-            ]
-          }
-        },
-      ]
-    }
-  }
-# depends_on = [ digitalocean_kubernetes_cluster.default_cluster, helm_release.cert-manager ]
-}
-
-
 resource "kubernetes_manifest" "solver_reference_grant" {
   manifest = {
     apiVersion = "gateway.networking.k8s.io/v1beta1"
@@ -113,9 +13,62 @@ resource "kubernetes_manifest" "solver_reference_grant" {
         namespace = var.project_namespace # Where your Gateway now lives
       }]
       to = [{
-        group = "" # Core API group
+        group = ""        # Core API group
         kind  = "Service" # Allow the Gateway to reach the Solver Service
       }]
     }
   }
+}
+
+resource "kubernetes_manifest" "tls_gateway" {
+  manifest = {
+    apiVersion = "gateway.networking.k8s.io/v1"
+    kind       = "Gateway"
+    metadata = {
+      name      = var.gateway_name
+      namespace = var.project_namespace
+    }
+
+    spec = {
+      gatewayClassName = "cilium"
+
+      listeners = concat(
+        # HTTPS Listeners
+        [for site in var.gateway_sites : {
+          name     = "https-${site.name}"
+          protocol = "HTTPS"
+          port     = var.gateway_listener_https_port
+          hostname = site.host
+          tls = {
+            certificateRefs = [{
+              kind      = "Secret"
+              name      = site.secret
+              namespace = var.project_namespace
+            }]
+          }
+        }],
+        # HTTP Listeners
+        [for site in var.gateway_sites : {
+          name     = "http-${site.name}"
+          protocol = "HTTP"
+          port     = var.gateway_listener_http_port
+          hostname = site.host
+          allowedRoutes = {
+            namespaces = { from = "All" }
+            kinds      = [{ group = "gateway.networking.k8s.io", kind = "HTTPRoute" }]
+          }
+        }]
+      )
+    }
+  }
+}
+
+resource "digitalocean_project_resources" "gateway_attachment" {
+  count = var.gateway_loadbalancer_id != null ? 1 : 0
+
+  project = var.project_id
+
+  resources = [
+    "do:loadbalancer:${var.gateway_loadbalancer_id}"
+  ]
 }
